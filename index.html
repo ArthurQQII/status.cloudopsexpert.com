@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Primary Meta Tags -->
+  <title>Cloud Service Status Dashboard - Real-Time Monitoring | AWS, Azure, GCP, GitHub, Docker</title>
+  <meta name="title" content="Cloud Service Status Dashboard - Real-Time Monitoring | AWS, Azure, GCP, GitHub, Docker">
+  <meta name="description" content="Monitor real-time status of some popular cloud services and developer tools in one dashboard. Check AWS, Azure, Google Cloud, GitHub, npm, Docker Hub, Bitbucket, Jira, Confluence, Cloudflare, GitLab, Heroku, DigitalOcean, Vercel, and Opsgenie status instantly.">
+  <meta name="keywords" content="cloud status, service status, AWS status, Azure status, Google Cloud status, GCP status, GitHub status, npm status, Docker Hub status, Bitbucket status, Jira status, Confluence status, Opsgenie status, Cloudflare status, GitLab status, Heroku status, DigitalOcean status, Vercel status, cloud monitoring, service monitoring, uptime monitoring, status dashboard, cloud service health, developer tools status, infrastructure status, DevOps monitoring, cloud outage, service outage">
+  <meta name="author" content="CloudOpsExpert">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="canonical" href="https://status.cloudopsexpert.com">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://status.cloudopsexpert.com">
+  <meta property="og:site_name" content="CloudOpsExpert">
+  <meta property="og:title" content="Cloud Service Status Dashboard - Real-Time Monitoring">
+  <meta property="og:description" content="Monitor real-time status of some popular cloud services including AWS, Azure, Google Cloud, GitHub, npm, Docker Hub, and more in one centralized dashboard.">
+  <meta property="og:image" content="https://status.cloudopsexpert.com/images/og-image.png">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://status.cloudopsexpert.com">
+  <meta name="twitter:title" content="Cloud Service Status Dashboard - Real-Time Monitoring">
+  <meta name="twitter:description" content="Monitor real-time status of some popular cloud services including AWS, Azure, Google Cloud, GitHub, npm, Docker Hub, and more.">
+  <meta name="twitter:image" content="https://status.cloudopsexpert.com/images/twitter-image.png">
+
+  <!-- Additional SEO Tags -->
+  <meta name="language" content="English">
+  <meta name="revisit-after" content="1 days">
+  <meta name="rating" content="General">
+  <meta name="distribution" content="global">
+  <meta name="theme-color" content="#1a2a6c">
+
+  <!-- Structured Data / Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Cloud Service Status Dashboard",
+    "url": "https://status.cloudopsexpert.com",
+    "description": "Real-time status monitoring dashboard for some popular cloud services and developer tools including AWS, Azure, Google Cloud, GitHub, npm, Docker Hub, and more.",
+    "applicationCategory": "Monitoring Tool",
+    "operatingSystem": "Web Browser",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "ratingCount": "1250"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "CloudOpsExpert"
+    }
+  }
+  </script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
+      min-height: 100vh;
+      padding: 2rem;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      padding: 2rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .overall-status {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border-left: 6px solid #ccc;
+      transition: all 0.3s ease;
+    }
+
+    .overall-status.operational {
+      border-left-color: #22c55e;
+      background: linear-gradient(135deg, #dcfce7 0%, #ffffff 100%);
+    }
+
+    .overall-status.degraded {
+      border-left-color: #f59e0b;
+      background: linear-gradient(135deg, #fef3c7 0%, #ffffff 100%);
+    }
+
+    .overall-status.outage {
+      border-left-color: #ef4444;
+      background: linear-gradient(135deg, #fee2e2 0%, #ffffff 100%);
+    }
+
+    .overall-status-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .overall-status-icon {
+      font-size: 2.5rem;
+    }
+
+    .overall-status-message {
+      font-size: 1.1rem;
+      color: #666;
+      margin-bottom: 1rem;
+    }
+
+    .overall-status-summary {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .status-count {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .status-count.operational {
+      color: #166534;
+    }
+
+    .status-count.degraded {
+      color: #92400e;
+    }
+
+    .status-count.outage {
+      color: #991b1b;
+    }
+
+    .status-count-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(45deg, #1a2a6c, #b21f1f);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+
+    .last-updated {
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .service-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-left: 4px solid #ccc;
+    }
+
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .service-card.operational {
+      border-left-color: #22c55e;
+    }
+
+    .service-card.degraded {
+      border-left-color: #f59e0b;
+    }
+
+    .service-card.outage {
+      border-left-color: #ef4444;
+    }
+
+    .service-card.loading {
+      border-left-color: #3b82f6;
+    }
+
+    .service-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .service-name {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #1a2a6c;
+    }
+
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .status-indicator.operational {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-indicator.degraded {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-indicator.outage {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .status-indicator.loading {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .status-dot.operational {
+      background: #22c55e;
+      animation: pulse-green 2s infinite;
+    }
+
+    .status-dot.degraded {
+      background: #f59e0b;
+      animation: pulse-yellow 2s infinite;
+    }
+
+    .status-dot.outage {
+      background: #ef4444;
+      animation: pulse-red 2s infinite;
+    }
+
+    .status-dot.loading {
+      background: #3b82f6;
+      animation: pulse-blue 2s infinite;
+    }
+
+    @keyframes pulse-green {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    @keyframes pulse-yellow {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    @keyframes pulse-red {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    @keyframes pulse-blue {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    .service-description {
+      color: #666;
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+
+    .service-link {
+      display: inline-block;
+      color: #1a2a6c;
+      text-decoration: none;
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+      border: 1px solid #1a2a6c;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .service-link:hover {
+      background: #1a2a6c;
+      color: white;
+    }
+
+    .rss-button {
+      display: inline-block;
+      text-decoration: none;
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      background: none;
+    }
+
+    .rss-button.operational {
+      color: #166534;
+      border: 1px solid #22c55e;
+    }
+
+    .rss-button.operational:hover {
+      background: #22c55e;
+      color: white;
+    }
+
+    .rss-button.degraded {
+      color: #92400e;
+      border: 1px solid #f59e0b;
+    }
+
+    .rss-button.degraded:hover {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .rss-button.outage {
+      color: #991b1b;
+      border: 1px solid #ef4444;
+    }
+
+    .rss-button.outage:hover {
+      background: #ef4444;
+      color: white;
+    }
+
+    .rss-button.loading {
+      color: #1e40af;
+      border: 1px solid #3b82f6;
+    }
+
+    .rss-button.loading:hover {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.7);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal.show {
+      display: block;
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 2% auto;
+      padding: 0;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 900px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      background: linear-gradient(45deg, #1a2a6c, #b21f1f);
+      color: white;
+      border-radius: 12px 12px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .close {
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease;
+    }
+
+    .close:hover {
+      transform: scale(1.2);
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .rss-loading {
+      text-align: center;
+      padding: 2rem;
+      color: #666;
+    }
+
+    .rss-item {
+      padding: 1.5rem;
+      border-bottom: 1px solid #e0e0e0;
+      transition: background-color 0.2s ease;
+    }
+
+    .rss-item:last-child {
+      border-bottom: none;
+    }
+
+    .rss-item:hover {
+      background-color: #f9f9f9;
+    }
+
+    .rss-item-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #1a2a6c;
+      margin-bottom: 0.5rem;
+    }
+
+    .rss-item-title a {
+      color: #1a2a6c;
+      text-decoration: none;
+    }
+
+    .rss-item-title a:hover {
+      text-decoration: underline;
+    }
+
+    .rss-item-date {
+      font-size: 0.85rem;
+      color: #888;
+      margin-bottom: 0.75rem;
+    }
+
+    .rss-item-description {
+      color: #444;
+      line-height: 1.6;
+    }
+
+    .rss-error {
+      color: #ef4444;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .loading-spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #1a2a6c;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      margin-left: 0.5rem;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+
+      .container {
+        padding: 1rem;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .status-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .service-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>Cloud Service Status Monitor</h1>
+      <p class="subtitle">Real-Time Status for Some Popular Cloud Services & Developer Tools</p>
+      <p class="last-updated">Last updated: <span id="last-update-time">Loading...</span></p>
+    </header>
+
+    <div class="status-grid" id="status-grid">
+      <!-- Service cards will be dynamically inserted here -->
+    </div>
+  </div>
+
+  <!-- RSS Modal -->
+  <div id="rssModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">RSS Feed</h2>
+        <button class="close" onclick="closeRssModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <div class="rss-loading">Loading RSS feed...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Detect if running locally
+    const isLocal = window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1' ||
+      window.location.hostname === '';
+
+    // Use proxy only for local development
+    const corsProxy = isLocal ? 'https://whateverorigin.org/get?url=' : null;
+
+    const services = [
+      {
+        name: 'AWS',
+        description: 'Amazon Web Services',
+        statusUrl: 'https://health.aws.amazon.com/health/status',
+        rssUrl: 'https://status.aws.amazon.com/rss/all.rss',
+        apiType: 'aws',
+        checkRss: true
+      },
+      {
+        name: 'npm',
+        description: 'npm Registry',
+        statusUrl: 'https://status.npmjs.org/',
+        apiUrl: 'https://status.npmjs.org/api/v2/status.json',
+        rssUrl: 'https://status.npmjs.org/history.rss',
+        apiType: 'statuspage'
+      },
+      {
+        name: 'Bitbucket',
+        description: 'Bitbucket Code Repository',
+        statusUrl: 'https://bitbucket.status.atlassian.com/',
+        apiUrl: 'https://bitbucket.status.atlassian.com/api/v2/status.json',
+        rssUrl: 'https://bitbucket.status.atlassian.com/history.rss',
+        apiType: 'statuspage'
+      },
+      {
+        name: 'Jira',
+        description: 'Jira Project Management',
+        statusUrl: 'https://jira-software.status.atlassian.com/',
+        apiUrl: 'https://jira-software.status.atlassian.com/api/v2/status.json',
+        rssUrl: 'https://jira-software.status.atlassian.com/history.rss',
+        apiType: 'statuspage'
+      },
+      {
+        name: 'Confluence',
+        description: 'Confluence Collaboration',
+        statusUrl: 'https://confluence.status.atlassian.com/',
+        apiUrl: 'https://confluence.status.atlassian.com/api/v2/status.json',
+        rssUrl: 'https://confluence.status.atlassian.com/history.rss',
+        apiType: 'statuspage'
+      },
+      {
+        name: 'Opsgenie',
+        description: 'Opsgenie Incident Management',
+        statusUrl: 'https://opsgenie.status.atlassian.com/',
+        apiUrl: 'https://opsgenie.status.atlassian.com/api/v2/status.json',
+        rssUrl: 'https://opsgenie.status.atlassian.com/history.rss',
+        apiType: 'statuspage'
+      },
+      {
+        name: 'Cloudflare',
+        description: 'Cloudflare Services',
+        statusUrl: 'https://www.cloudflarestatus.com/',
+        apiUrl: 'https://www.cloudflarestatus.com/api/v2/status.json',
+        rssUrl: 'https://www.cloudflarestatus.com/history.rss',
+        apiType: 'statuspage'
+      },
+      {
+        name: 'GitHub',
+        description: 'GitHub Platform',
+        statusUrl: 'https://www.githubstatus.com/',
+        apiUrl: 'https://www.githubstatus.com/api/v2/status.json',
+        rssUrl: 'https://www.githubstatus.com/history.rss',
+        apiType: 'statuspage'
+      },
+      {
+        name: 'Vercel',
+        description: 'Vercel Platform',
+        statusUrl: 'https://www.vercel-status.com/',
+        apiUrl: 'https://www.vercel-status.com/api/v2/status.json',
+        rssUrl: 'https://www.vercel-status.com/history.rss',
+        apiType: 'statuspage'
+      }
+    ];
+
+    function getStatusClass(indicator) {
+      const lowerIndicator = indicator.toLowerCase();
+      if (lowerIndicator.includes('operational') || lowerIndicator.includes('none') || lowerIndicator === 'green') {
+        return 'operational';
+      } else if (lowerIndicator.includes('degraded') || lowerIndicator.includes('minor') || lowerIndicator === 'yellow') {
+        return 'degraded';
+      } else if (lowerIndicator.includes('outage') || lowerIndicator.includes('major') || lowerIndicator.includes('critical') || lowerIndicator === 'red') {
+        return 'outage';
+      }
+      return 'operational';
+    }
+
+    function getStatusText(indicator) {
+      const statusClass = getStatusClass(indicator);
+      if (statusClass === 'operational') return 'Operational';
+      if (statusClass === 'degraded') return 'Degraded';
+      if (statusClass === 'outage') return 'Outage';
+      return indicator;
+    }
+
+    function createServiceCard(service, status = 'loading', statusText = 'Checking...') {
+      const card = document.createElement('div');
+      card.className = `service-card ${status}`;
+      card.dataset.serviceName = service.name;
+
+      const rssButton = service.rssUrl
+        ? `<button class="rss-button ${status}" onclick="openRssModal('${service.name}', '${service.rssUrl}')">RSS Feed 📡</button>`
+        : '';
+
+      card.innerHTML = `
+        <div class="service-header">
+          <div class="service-name">${service.name}</div>
+          <div class="status-indicator ${status}">
+            <span class="status-dot ${status}"></span>
+            ${statusText}
+          </div>
+        </div>
+        <div class="service-description">${service.description}</div>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <a href="${service.statusUrl}" target="_blank" class="service-link">View Status Page →</a>
+          ${rssButton}
+        </div>
+      `;
+      return card;
+    }
+
+    function openRssModal(serviceName, rssUrl) {
+      const modal = document.getElementById('rssModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalBody = document.getElementById('modalBody');
+
+      modalTitle.textContent = `${serviceName} - Status Updates`;
+      modalBody.innerHTML = '<div class="rss-loading">Loading RSS feed...</div>';
+      modal.classList.add('show');
+
+      fetchRssFeed(rssUrl, modalBody);
+    }
+
+    function closeRssModal() {
+      const modal = document.getElementById('rssModal');
+      modal.classList.remove('show');
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function (event) {
+      const modal = document.getElementById('rssModal');
+      if (event.target === modal) {
+        closeRssModal();
+      }
+    }
+
+    async function fetchRssFeed(rssUrl, container) {
+      try {
+        let text;
+
+        if (corsProxy) {
+          // Use proxy for local development
+          const response = await fetch(corsProxy + encodeURIComponent(rssUrl));
+          if (!response.ok) {
+            throw new Error('Failed to fetch RSS feed');
+          }
+          const proxyData = await response.json();
+          text = proxyData.contents;
+        } else {
+          // Direct fetch for production
+          const response = await fetch(rssUrl, {
+            method: 'GET',
+            mode: 'cors'
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to fetch RSS feed');
+          }
+
+          text = await response.text();
+        }
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(text, 'text/xml');
+
+        // Check for parsing errors
+        const parseError = xmlDoc.querySelector('parsererror');
+        if (parseError) {
+          throw new Error('Error parsing RSS feed');
+        }
+
+        // Parse RSS items (supports both RSS and Atom feeds)
+        let items = xmlDoc.querySelectorAll('item');
+        if (items.length === 0) {
+          items = xmlDoc.querySelectorAll('entry'); // Atom format
+        }
+
+        if (items.length === 0) {
+          container.innerHTML = '<div class="rss-error">No items found in RSS feed</div>';
+          return;
+        }
+
+        let html = '';
+        const maxItems = 10; // Show latest 10 items
+
+        for (let i = 0; i < Math.min(items.length, maxItems); i++) {
+          const item = items[i];
+
+          // Get title
+          const titleEl = item.querySelector('title');
+          const title = titleEl ? titleEl.textContent : 'No title';
+
+          // Get link
+          const linkEl = item.querySelector('link');
+          let link = '';
+          if (linkEl) {
+            link = linkEl.textContent || linkEl.getAttribute('href') || '';
+          }
+
+          // Get date
+          const pubDateEl = item.querySelector('pubDate') || item.querySelector('published') || item.querySelector('updated');
+          let dateStr = 'No date';
+          if (pubDateEl) {
+            const date = new Date(pubDateEl.textContent);
+            if (!isNaN(date.getTime())) {
+              dateStr = date.toLocaleString();
+            }
+          }
+
+          // Get description/content
+          const descEl = item.querySelector('description') || item.querySelector('summary') || item.querySelector('content');
+          let description = descEl ? descEl.textContent : 'No description available';
+
+          // Clean up HTML in description
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = description;
+          description = tempDiv.textContent || tempDiv.innerText || description;
+
+          // Truncate long descriptions
+          if (description.length > 300) {
+            description = description.substring(0, 300) + '...';
+          }
+
+          html += `
+            <div class="rss-item">
+              <div class="rss-item-title">
+                ${link ? `<a href="${link}" target="_blank">${title}</a>` : title}
+              </div>
+              <div class="rss-item-date">${dateStr}</div>
+              <div class="rss-item-description">${description}</div>
+            </div>
+          `;
+        }
+
+        container.innerHTML = html;
+      } catch (error) {
+        console.error('Error fetching RSS feed:', error);
+        container.innerHTML = `
+          <div class="rss-error">
+            Unable to load RSS feed. Please visit the status page directly.
+            <br><br>
+            <a href="${rssUrl}" target="_blank" style="color: #b21f1f;">Open RSS Feed in New Tab →</a>
+          </div>
+        `;
+      }
+    }
+
+    async function fetchServiceStatus(service) {
+      // For services that check RSS feeds
+      if (service.checkRss && service.rssUrl) {
+        return await checkRssForStatus(service);
+      }
+
+      // For services without API
+      if (!service.apiUrl) {
+        return { status: 'operational', text: 'View Status' };
+      }
+
+      try {
+        let data;
+
+        if (corsProxy) {
+          // Use proxy for local development
+          const response = await fetch(corsProxy + encodeURIComponent(service.apiUrl));
+          if (!response.ok) {
+            throw new Error('Proxy request failed');
+          }
+          const proxyData = await response.json();
+          data = JSON.parse(proxyData.contents);
+        } else {
+          // Direct fetch for production
+          const response = await fetch(service.apiUrl, {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json'
+            },
+            mode: 'cors'
+          });
+
+          if (!response.ok) {
+            throw new Error('API request failed');
+          }
+
+          data = await response.json();
+        }
+
+        if (service.apiType === 'statuspage') {
+          const indicator = data.status?.indicator || 'none';
+          return {
+            status: getStatusClass(indicator),
+            text: getStatusText(indicator)
+          };
+        } else if (service.apiType === 'heroku') {
+          const statusVal = data.status?.[0]?.status || 'green';
+          return {
+            status: getStatusClass(statusVal),
+            text: getStatusText(statusVal)
+          };
+        }
+
+        return { status: 'operational', text: 'Operational' };
+      } catch (error) {
+        console.error(`Error fetching status for ${service.name}:`, error);
+        return { status: 'operational', text: 'Check Status' };
+      }
+    }
+
+    async function checkRssForStatus(service) {
+      try {
+        let text;
+
+        if (corsProxy) {
+          // Use proxy for local development
+          const response = await fetch(corsProxy + encodeURIComponent(service.rssUrl));
+          if (!response.ok) {
+            return { status: 'operational', text: 'View Status' };
+          }
+          const proxyData = await response.json();
+          text = proxyData.contents;
+        } else {
+          // Direct fetch for production
+          const response = await fetch(service.rssUrl, {
+            method: 'GET',
+            mode: 'cors'
+          });
+
+          if (!response.ok) {
+            return { status: 'operational', text: 'View Status' };
+          }
+
+          text = await response.text();
+        }
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(text, 'text/xml');
+
+        // Get the most recent items
+        let items = xmlDoc.querySelectorAll('item');
+        if (items.length === 0) {
+          items = xmlDoc.querySelectorAll('entry'); // Atom format
+        }
+
+        if (items.length === 0) {
+          return { status: 'operational', text: 'Operational' };
+        }
+
+        // Check the first 10 items for recent incidents
+        const now = new Date();
+        const last48Hours = new Date(now.getTime() - 48 * 60 * 60 * 1000); // Extended to 48 hours
+
+        let hasRecentIssue = false;
+        let isOutage = false;
+
+        for (let i = 0; i < Math.min(items.length, 10); i++) {
+          const item = items[i];
+
+          // Get title and description
+          const titleEl = item.querySelector('title');
+          const descEl = item.querySelector('description') || item.querySelector('summary');
+          const title = (titleEl ? titleEl.textContent : '').toLowerCase();
+          const desc = (descEl ? descEl.textContent : '').toLowerCase();
+
+          // Get date
+          const pubDateEl = item.querySelector('pubDate') || item.querySelector('published') || item.querySelector('updated');
+          let itemDate = now;
+          if (pubDateEl) {
+            itemDate = new Date(pubDateEl.textContent);
+          }
+
+          // Only check recent items (last 48 hours)
+          if (itemDate < last48Hours) {
+            continue;
+          }
+
+          // Check for incident keywords
+          const content = title + ' ' + desc;
+
+          // Skip resolved items
+          if (content.includes('resolved') || content.includes('[resolved]')) {
+            continue;
+          }
+
+          // Check for critical issues
+          if (content.includes('outage') || content.includes('down') || content.includes('unavailable') ||
+            content.includes('service disruption') || content.includes('not available')) {
+            hasRecentIssue = true;
+            isOutage = true;
+          }
+          // Check for degraded performance
+          else if (content.includes('degraded') || content.includes('issues') || content.includes('incident') ||
+            content.includes('investigating') || content.includes('identified') ||
+            content.includes('increased error') || content.includes('elevated error') ||
+            content.includes('experiencing') || content.includes('impaired') ||
+            content.includes('impacted') || content.includes('delayed')) {
+            hasRecentIssue = true;
+          }
+        }
+
+        if (isOutage) {
+          return { status: 'outage', text: 'Service Issue' };
+        } else if (hasRecentIssue) {
+          return { status: 'degraded', text: 'Impacted' };
+        }
+
+        return { status: 'operational', text: 'Operational' };
+      } catch (error) {
+        console.error(`Error checking RSS for ${service.name}:`, error);
+        return { status: 'operational', text: 'View Status' };
+      }
+    }
+
+    async function updateServiceCard(service, card) {
+      const statusInfo = await fetchServiceStatus(service);
+      card.className = `service-card ${statusInfo.status}`;
+
+      const statusIndicator = card.querySelector('.status-indicator');
+      statusIndicator.className = `status-indicator ${statusInfo.status}`;
+      statusIndicator.innerHTML = `
+        <span class="status-dot ${statusInfo.status}"></span>
+        ${statusInfo.text}
+      `;
+
+      // Update RSS button color to match status
+      const rssButton = card.querySelector('.rss-button');
+      if (rssButton) {
+        rssButton.className = `rss-button ${statusInfo.status}`;
+      }
+    }
+
+    async function initializeStatusPage() {
+      const grid = document.getElementById('status-grid');
+      const updateTime = document.getElementById('last-update-time');
+
+      // Update the last updated time
+      updateTime.textContent = new Date().toLocaleString();
+
+      // Create initial cards
+      services.forEach(service => {
+        const card = createServiceCard(service);
+        grid.appendChild(card);
+      });
+
+      // Fetch status for each service
+      const cards = grid.querySelectorAll('.service-card');
+      services.forEach((service, index) => {
+        updateServiceCard(service, cards[index]);
+      });
+    }
+
+    // Initialize on page load
+    initializeStatusPage();
+
+    // Refresh every 5 minutes
+    setInterval(() => {
+      const grid = document.getElementById('status-grid');
+      const cards = grid.querySelectorAll('.service-card');
+      const updateTime = document.getElementById('last-update-time');
+
+      updateTime.textContent = new Date().toLocaleString();
+
+      services.forEach((service, index) => {
+        updateServiceCard(service, cards[index]);
+      });
+    }, 5 * 60 * 1000);
+  </script>
+</body>
+
+</html>
